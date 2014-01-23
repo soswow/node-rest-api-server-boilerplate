@@ -1,0 +1,13 @@
+{
+  "name": "simple-node-rest-api",
+  "version": "0.0.1",
+  "dependencies": {
+    "mers": "~0.7.2",
+    "passport": "~0.1.18",
+    "passport-facebook": "~1.0.2",
+    "restify": "~2.6.1"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
