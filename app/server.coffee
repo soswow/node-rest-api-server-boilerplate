@@ -1,44 +1,21 @@
-restify = require 'restify'
-passport = require 'passport'
-FacebookStrategy = require('passport-facebook').Strategy
-secrets = require './secrets'
+authorization = require './authorization'
+express = require 'express'
 
 port = process.env.PORT or 3000
 
-# config vars
-FB_LOGIN_PATH = "/api/facebook_login"
-FB_CALLBACK_PATH = "/api/facebook_callback"
 SERVER_PREFIX = "http://localhost:#{port}"
 
-# set up server
-server = restify.createServer()
-server.use restify.queryParser()
-server.use passport.initialize()
 
-# set up passport-facebook
-server.get FB_LOGIN_PATH, passport.authenticate("facebook", session: true)
-server.get FB_CALLBACK_PATH, passport.authenticate("facebook", session: true),
-  (req, res) ->
-    console.log "we b logged in!"
-    console.dir req.user
-    res.send 'Welcome ' + req.user.displayName
+app = express()
+app.use express.cookieParser()
+app.use express.bodyParser()
+app.use express.session secret: 'keyboard cat blah'
+authorization app, SERVER_PREFIX
+app.use app.router
 
-passport.use new FacebookStrategy(
-  clientID: secrets.FB_APPID
-  clientSecret: secrets.FB_APPSECRET
-  callbackURL: SERVER_PREFIX + FB_CALLBACK_PATH
-, (accessToken, refreshToken, profile, done) ->
-  console.log "accessToken=" + accessToken + " facebookId=" + profile.id
-  done null, profile
-)
-
-passport.serializeUser (user, done) ->
-  done null, JSON.stringify(user) #TODO Should save only ID
-
-passport.deserializeUser (id, done) ->
-  done null, JSON.parse(id) #TODO Should read from DB by ID
-
+app.get '/api/user', (req, res, next) ->
+  res.end JSON.stringify(req.user)
 
 # Start the app by listening on <port>
-server.listen port
+app.listen port
 console.log "App started on port " + port
