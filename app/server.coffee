@@ -13,7 +13,7 @@ authorization app, SERVER_PREFIX
 app.use app.router
 
 app.get '/api/user', (req, res, next) ->
-  res.end JSON.stringify(req.user)
+  res.end req.user.values
 
 db.init ->
   app.listen port

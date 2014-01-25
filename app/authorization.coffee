@@ -44,9 +44,10 @@ module.exports = (app, baseUrl) ->
     db.User.findOrCreate(email: profile.emails[0].value).done (err, user) ->
       return done(err) if err
       user.name = profile.displayName
-      user.data =
-        profile.provider:
-          id: profile.id
+      data = user.data
+      data[profile.provider] =
+        id: profile.id
+      user.data = data
       user.save().done (err) -> done err, user.id
 
   passport.deserializeUser (id, done) ->

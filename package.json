@@ -2,17 +2,13 @@
   "name": "simple-node-rest-api",
   "version": "0.0.1",
   "dependencies": {
-    "mers": "~0.7.2",
     "passport": "~0.1.18",
     "passport-facebook": "~1.0.2",
-    "restify": "~2.6.1",
-    "connect": "~2.12.0",
-    "client-sessions": "~0.6.0",
-    "connect-redirection": "0.0.1",
+    "passport-linkedin": "~0.1.3",
     "express": "~3.4.8",
-    "sqlite3": "~2.2.0",
     "sequelize": "~1.7.0-rc2",
-    "passport-linkedin": "~0.1.3"
+    "sqlite3": "~2.2.0",
+    "underscore": "~1.5.2"
   },
   "engines": {
     "node": ">=0.8.0"
