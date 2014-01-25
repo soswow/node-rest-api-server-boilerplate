@@ -8,9 +8,14 @@ module.exports = (app, baseUrl) ->
   app.use passport.initialize()
   app.use passport.session()
 
-  # set up passport-facebook
+
   fbCallbackUrl = '/auth/facebook/callback'
-  app.use '/auth/facebook', passport.authenticate("facebook", scope: ['email'], failureRedirect: '/', successRedirect: '/api/user')
+
+  app.use '/auth/facebook',
+    passport.authenticate("facebook",
+      scope: ['email'],
+      failureRedirect: '/'
+      successRedirect: 'http://localhost:9000')
 
   passport.use new FacebookStrategy(
     clientID: secrets.FB_APPID
@@ -27,7 +32,7 @@ module.exports = (app, baseUrl) ->
     passport.authenticate "linkedin",
       scope: ['r_basicprofile', 'r_emailaddress']
       failureRedirect: '/'
-      successRedirect: '/api/user'
+      successRedirect: 'http://localhost:9000'
 
   passport.use new LinkedInStrategy(
     consumerKey: secrets.LI_APPID
@@ -44,10 +49,10 @@ module.exports = (app, baseUrl) ->
     db.User.findOrCreate(email: profile.emails[0].value).done (err, user) ->
       return done(err) if err
       user.name = profile.displayName
-      data = user.data
-      data[profile.provider] =
+      providers = user.providers or {}
+      providers[profile.provider] =
         id: profile.id
-      user.data = data
+      user.providers = providers
       user.save().done (err) -> done err, user.id
 
   passport.deserializeUser (id, done) ->
